@@ -106,10 +106,10 @@ select{background:#3d7a37;color:#fff;padding:4px 10px}
     </div>
 </div>
 
-<!-- 声音解锁遮罩 -->
+<!-- 声音解锁提示 -->
 <div id="sound-overlay">
     <div class="icon">🔊</div>
-    <p>点击下方按钮开启声音</p>
+    <p id="sound-tip">点击下方按钮开启声音</p>
     <button class="btn-unlock" id="unlock-btn">开启声音</button>
 </div>
 
@@ -170,20 +170,83 @@ function getPinyin(text) {
     return text.split('').map(c => map[c] || c).join(' ');
 }
 
-/* ========== 语音功能 ========== */
+/* ========== 语音功能（带降级处理） ========== */
 let soundEnabled = false;
+let useSpeechSynth = false;
+let audioCtx = null;
 
-function initSpeech() {
+// 检测是否支持语音合成
+function checkSpeechSupport() {
     if ('speechSynthesis' in window) {
-        speechSynthesis.getVoices();
-        speechSynthesis.onvoiceschanged = function() {
-            speechSynthesis.getVoices();
-        };
+        useSpeechSynth = true;
+        return true;
+    }
+    return false;
+}
+
+// 初始化音频上下文（用于降级提示音）
+function initAudio() {
+    try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+// 播放降级提示音
+function playBeep(type) {
+    if (!audioCtx) return;
+    
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    if (type === 'success') {
+        // 匹配成功：两个上升音
+        oscillator.frequency.value = 523.25; // C5
+        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + 0.3);
+        
+        setTimeout(() => {
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+            osc2.frequency.value = 659.25; // E5
+            gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc2.start(audioCtx.currentTime);
+            osc2.stop(audioCtx.currentTime + 0.3);
+        }, 300);
+    } else if (type === 'win') {
+        // 胜利：欢快的上升音
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((freq, i) => {
+            setTimeout(() => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.3);
+            }, i * 200);
+        });
     }
 }
 
 function unlockSound() {
-    if ('speechSynthesis' in window) {
+    const support = checkSpeechSupport();
+    
+    if (support) {
+        // 支持语音合成
         const u = new SpeechSynthesisUtterance(' ');
         u.volume = 0;
         speechSynthesis.speak(u);
@@ -191,13 +254,25 @@ function unlockSound() {
         document.getElementById('sound-overlay').classList.add('hidden');
         speak('声音已开启');
     } else {
-        alert('您的浏览器不支持语音朗读功能');
+        // 不支持语音合成，尝试用 Web Audio 降级
+        const audioOK = initAudio();
+        if (audioOK) {
+            soundEnabled = true;
+            document.getElementById('sound-overlay').classList.add('hidden');
+            playBeep('success');
+            document.getElementById('hint').textContent = '当前环境不支持语音朗读，已切换为提示音模式';
+        } else {
+            alert('您的浏览器不支持语音功能，也无法播放提示音。游戏仍可正常进行，但无声音反馈。');
+            soundEnabled = true;
+            document.getElementById('sound-overlay').classList.add('hidden');
+        }
     }
 }
 
 function speak(text) {
     if (!soundEnabled) return;
-    if ('speechSynthesis' in window) {
+    
+    if (useSpeechSynth && 'speechSynthesis' in window) {
         speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text);
         u.lang = 'zh-CN';
@@ -210,6 +285,9 @@ function speak(text) {
         if (zhVoice) u.voice = zhVoice;
         
         speechSynthesis.speak(u);
+    } else {
+        // 降级：播放提示音
+        playBeep('success');
     }
 }
 
@@ -220,15 +298,19 @@ let selected = null;
 let timer = null;
 let startTime = 0;
 let finished = false;
-let lastTime = null; // 上次用时
-let bestTime = null; // 最快用时
+let lastTime = null;
+let bestTime = null;
 
 const $ = id => document.getElementById(id);
 const gameBoard = $('game-board');
 
 /* ========== 初始化 ========== */
 function init() {
-    initSpeech();
+    // 检测语音支持情况
+    const support = checkSpeechSupport();
+    if (!support) {
+        document.getElementById('sound-tip').textContent = '当前环境不支持语音朗读，将使用提示音';
+    }
     
     $('apply-btn').onclick = () => useUnit($('unit-select').value);
     $('next-btn').onclick = newGame;
@@ -383,19 +465,15 @@ function handleClick(index) {
     const b = gameItems[index];
     
     if (a.key === b.key && a.side !== b.side) {
-        // 匹配成功
         a.matched = true;
         b.matched = true;
         
-        // 先朗读词语
         speak(a.text);
         
-        // 延迟一下再判断是否全部完成，确保词语朗读先触发
         setTimeout(() => {
             selected = null;
             renderBoard();
             
-            // 检查是否全部完成
             if (gameItems.every(item => item.matched)) {
                 win();
             }
@@ -412,32 +490,24 @@ function win() {
     stopTimer();
     const time = ((performance.now() - startTime) / 1000).toFixed(1);
     
-    // 更新最佳成绩
     if (bestTime === null || parseFloat(time) < bestTime) {
         bestTime = parseFloat(time);
         $('best-time').textContent = '🏆 最快：' + bestTime.toFixed(1) + ' 秒';
     }
     
-    // 判断本次成绩与上次对比
     let comment = '';
     if (lastTime === null) {
-        // 第一次完成
         comment = '太棒了，完成了挑战！';
     } else if (parseFloat(time) < lastTime) {
-        // 比上次快
         comment = '真厉害，比上次更快了！';
     } else {
-        // 比上次慢
         comment = '没关系，继续加油！';
     }
     
-    // 保存本次用时
     lastTime = parseFloat(time);
     
-    // 延迟播报挑战成功，确保词语朗读完成
     setTimeout(() => {
         alert('🎉 恭喜挑战成功！用时 ' + time + ' 秒\n' + comment);
-        // 先播报词语，再播报鼓励语
         speak('恭喜挑战成功');
         setTimeout(() => {
             speak(comment);
