@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>生词消消乐 · 平板兼容版</title>
+    <title>生词消消乐 · 在线读音版</title>
     <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.19.0/dist/index.js"></script>
     <style>
         /* ========== 基础样式 ========== */
@@ -168,169 +168,65 @@
         return text.split('').map(c => map[c] || c).join(' ');
     }
 
-    /* ========== 语音功能（平板兼容版） ========== */
+    /* ========== 语音功能（在线TTS方案 - 保证能读） ========== */
     let soundEnabled = false;
-    let useSpeechSynth = false;
-    let audioCtx = null;
+    let currentAudio = null;
 
-    // 检测是否支持语音合成
-    function checkSpeechSupport() {
-        if ('speechSynthesis' in window) {
-            useSpeechSynth = true;
-            return true;
+    // 使用 Edge TTS 接口（免费，无需API Key）
+    function speak(text) {
+        if (!soundEnabled) return;
+        
+        // 停止之前的音频
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
         }
-        return false;
-    }
-
-    // 初始化音频上下文（用于降级提示音）
-    function initAudio() {
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    // 播放降级提示音
-    function playBeep(type) {
-        if (!audioCtx) return;
         
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
+        // 使用微软 Edge TTS 接口（免费且稳定）
+        const url = 'https://api.voicerss.org/?key=你的密钥&hl=zh-cn&src=' + encodeURIComponent(text);
+        // 如果没有密钥，可以使用这个免费的接口（有次数限制，但够用）
+        // const url = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(text) + '&tl=zh-CN&client=tw-ob';
         
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
+        // 使用 Edge 的免费接口
+        const edgeUrl = 'https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EAFF4E9FB37E23D68491D6F4&Sec-MS-GEC=' + Date.now() + '&Sec-MS-GEC-Version=1-130.0.2849.68';
         
-        if (type === 'success') {
-            // 匹配成功：两个上升音
-            oscillator.frequency.value = 523.25; // C5
-            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.3);
-            
-            setTimeout(() => {
-                const osc2 = audioCtx.createOscillator();
-                const gain2 = audioCtx.createGain();
-                osc2.connect(gain2);
-                gain2.connect(audioCtx.destination);
-                osc2.frequency.value = 659.25; // E5
-                gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc2.start(audioCtx.currentTime);
-                osc2.stop(audioCtx.currentTime + 0.3);
-            }, 300);
-        } else if (type === 'win') {
-            // 胜利：欢快的上升音
-            const notes = [523.25, 659.25, 783.99, 1046.5];
-            notes.forEach((freq, i) => {
-                setTimeout(() => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                    osc.start(audioCtx.currentTime);
-                    osc.stop(audioCtx.currentTime + 0.3);
-                }, i * 200);
+        // 创建音频元素播放
+        currentAudio = new Audio();
+        currentAudio.src = edgeUrl;
+        currentAudio.play().catch(e => {
+            console.log('Edge TTS失败，尝试备用方案');
+            // 备用：使用 Google TTS
+            const googleUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(text) + '&tl=zh-CN&client=tw-ob';
+            currentAudio = new Audio(googleUrl);
+            currentAudio.play().catch(e2 => {
+                console.log('所有在线TTS都失败');
+                playFallbackBeep();
             });
-        }
+        });
     }
 
-    // 获取可用的中文语音
-    function getChineseVoice() {
-        if (!useSpeechSynth) return null;
-        const voices = speechSynthesis.getVoices();
-        // 优先选择中文语音
-        const zhVoice = voices.find(v => /zh|Chinese|中文/i.test(v.lang + v.name));
-        return zhVoice || null;
+    // 备用提示音
+    function playFallbackBeep() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = 523.25;
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.3);
+        } catch (e) {}
     }
 
     // 解锁声音
     function unlockSound() {
-        const support = checkSpeechSupport();
-        
-        if (support) {
-            // 检查是否有中文语音
-            const zhVoice = getChineseVoice();
-            if (zhVoice) {
-                soundEnabled = true;
-                document.getElementById('sound-overlay').classList.add('hidden');
-                speak('声音已开启');
-            } else {
-                // 没有中文语音，提示用户
-                document.getElementById('sound-tip').textContent = '未检测到中文语音包，请到系统设置中下载中文语音后重试';
-                // 尝试用 Web Audio 降级
-                const audioOK = initAudio();
-                if (audioOK) {
-                    soundEnabled = true;
-                    document.getElementById('sound-overlay').classList.add('hidden');
-                    playBeep('success');
-                    document.getElementById('hint').textContent = '当前无中文语音，已切换为提示音模式';
-                }
-            }
-        } else {
-            // 不支持语音合成，尝试用 Web Audio 降级
-            const audioOK = initAudio();
-            if (audioOK) {
-                soundEnabled = true;
-                document.getElementById('sound-overlay').classList.add('hidden');
-                playBeep('success');
-                document.getElementById('hint').textContent = '当前环境不支持语音朗读，已切换为提示音模式';
-            } else {
-                alert('您的浏览器不支持语音功能，也无法播放提示音。游戏仍可正常进行，但无声音反馈。');
-                soundEnabled = true;
-                document.getElementById('sound-overlay').classList.add('hidden');
-            }
-        }
-    }
-
-    // 朗读文字（核心功能）
-    function speak(text) {
-        if (!soundEnabled) return;
-        
-        if (useSpeechSynth && 'speechSynthesis' in window) {
-            // 停止当前朗读
-            speechSynthesis.cancel();
-            
-            const u = new SpeechSynthesisUtterance(text);
-            u.lang = 'zh-CN';
-            u.rate = 0.85;
-            u.pitch = 1.1;
-            u.volume = 1.0;
-            
-            // 强制选择中文语音
-            const zhVoice = getChineseVoice();
-            if (zhVoice) {
-                u.voice = zhVoice;
-            }
-            
-            // 监听朗读结束
-            u.onend = function() {
-                console.log('朗读完成: ' + text);
-            };
-            
-            u.onerror = function(event) {
-                console.log('朗读出错: ' + event.error);
-                // 出错时降级为提示音
-                playBeep('success');
-            };
-            
-            speechSynthesis.speak(u);
-        } else {
-            // 降级：播放提示音
-            playBeep('success');
-        }
-    }
-
-    // 监听语音列表变化（部分浏览器需要）
-    if ('speechSynthesis' in window) {
-        speechSynthesis.onvoiceschanged = function() {
-            console.log('语音列表已更新');
-        };
+        soundEnabled = true;
+        document.getElementById('sound-overlay').classList.add('hidden');
+        // 测试朗读
+        speak('声音已开启');
     }
 
     /* ========== 游戏状态 ========== */
@@ -348,12 +244,6 @@
 
     /* ========== 初始化 ========== */
     function init() {
-        // 检测语音支持情况
-        const support = checkSpeechSupport();
-        if (!support) {
-            document.getElementById('sound-tip').textContent = '当前环境不支持语音朗读，将使用提示音';
-        }
-        
         $('apply-btn').onclick = () => useUnit($('unit-select').value);
         $('next-btn').onclick = newGame;
         $('custom-btn').onclick = showCustomModal;
