@@ -1,74 +1,72 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>生词消消乐 · 人教版四上全册</title>
-<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.19.0/dist/index.js"></script>
-<style>
-/* ========== 基础样式 ========== */
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif}
-html,body{width:100%;height:100%;overflow:hidden;background:#d9f2d0}
-body{display:flex;justify-content:center;align-items:center;padding:10px}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>生词消消乐 · 平板兼容版</title>
+    <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.19.0/dist/index.js"></script>
+    <style>
+        /* ========== 基础样式 ========== */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #d9f2d0; }
+        body { display: flex; justify-content: center; align-items: center; padding: 10px; }
 
-/* ========== 主容器 ========== */
-.wrap{width:100%;max-width:1000px;height:100%;background:rgba(235,250,220,.85);border:2px solid #b6d7a8;border-radius:28px;padding:12px 16px;display:flex;flex-direction:column;box-shadow:0 12px 30px rgba(80,110,70,.25);overflow:hidden}
+        /* ========== 主容器 ========== */
+        .wrap { width: 100%; max-width: 1000px; height: 100%; background: rgba(235, 250, 220, .85); border: 2px solid #b6d7a8; border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; box-shadow: 0 12px 30px rgba(80, 110, 70, .25); overflow: hidden; }
 
-/* ========== 标题 ========== */
-h1{font-size:clamp(24px,4vw,40px);color:#2d5e2c;text-align:center;font-weight:800;margin-bottom:8px;text-shadow:2px 2px 0 #c0e0b0;letter-spacing:2px}
+        /* ========== 标题 ========== */
+        h1 { font-size: clamp(24px, 4vw, 40px); color: #2d5e2c; text-align: center; font-weight: 800; margin-bottom: 8px; text-shadow: 2px 2px 0 #c0e0b0; letter-spacing: 2px; }
 
-/* ========== 控制栏 ========== */
-.controls{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;background:#e5f4db;border:2px solid #9dc98d;border-radius:40px;padding:8px 12px;margin-bottom:8px}
-select,button{font-size:14px;min-height:38px;border-radius:20px;border:2px solid #a5d69a;cursor:pointer;outline:none}
-select{background:#3d7a37;color:#fff;padding:4px 10px}
-.btn{background:#3d7a37;color:#fff;padding:6px 14px;box-shadow:0 3px 0 #1d461b;transition:all .1s}
-.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #1d461b}
-.status{background:#f0fae8;border:1px solid #7baa6a;border-radius:20px;padding:4px 10px;font-weight:600;color:#1e4a1a;font-size:13px}
+        /* ========== 控制栏 ========== */
+        .controls { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; background: #e5f4db; border: 2px solid #9dc98d; border-radius: 40px; padding: 8px 12px; margin-bottom: 8px; }
+        select, button { font-size: 14px; min-height: 38px; border-radius: 20px; border: 2px solid #a5d69a; cursor: pointer; outline: none; }
+        select { background: #3d7a37; color: #fff; padding: 4px 10px; }
+        .btn { background: #3d7a37; color: #fff; padding: 6px 14px; box-shadow: 0 3px 0 #1d461b; transition: all .1s; }
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #1d461b; }
+        .status { background: #f0fae8; border: 1px solid #7baa6a; border-radius: 20px; padding: 4px 10px; font-weight: 600; color: #1e4a1a; font-size: 13px; }
 
-/* ========== 计时器 ========== */
-.timer{display:flex;justify-content:space-between;align-items:center;background:#e5f4db;border:2px solid #9dc98d;border-radius:40px;padding:6px 16px;margin-bottom:8px;font-weight:700;color:#1e4a1a}
-#timer{background:#2c5e2a;color:#f9ffe9;padding:3px 12px;border-radius:20px;font-size:16px}
-.best-time{background:#ffd700;color:#5a4a00;padding:3px 12px;border-radius:20px;font-size:13px;font-weight:bold}
+        /* ========== 计时器 ========== */
+        .timer { display: flex; justify-content: space-between; align-items: center; background: #e5f4db; border: 2px solid #9dc98d; border-radius: 40px; padding: 6px 16px; margin-bottom: 8px; font-weight: 700; color: #1e4a1a; }
+        #timer { background: #2c5e2a; color: #f9ffe9; padding: 3px 12px; border-radius: 20px; font-size: 16px; }
+        .best-time { background: #ffd700; color: #5a4a00; padding: 3px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
 
-/* ========== 游戏区域：固定5列网格 ========== */
-.game-board{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:5px;overflow-y:auto;align-content:start}
+        /* ========== 游戏区域 ========== */
+        .game-board { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 5px; overflow-y: auto; align-content: start; }
 
-/* ========== 泡泡：固定尺寸 ========== */
-.bubble{width:100%;aspect-ratio:1/1;max-width:110px;margin:0 auto;border-radius:50%;display:flex;justify-content:center;align-items:center;text-align:center;font-size:clamp(14px,2vw,20px);font-weight:bold;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.4);cursor:pointer;user-select:none;transition:all .15s;word-break:break-all;line-height:1.2;padding:4px;box-shadow:0 6px 10px rgba(0,0,0,.2),inset 0 -4px 8px rgba(0,0,0,.15),inset 0 4px 8px rgba(255,255,255,.4)}
-.bubble:active{transform:scale(.92)}
-.bubble.selected{border:3px solid #ffe484;box-shadow:0 0 0 3px #ffe484,0 6px 12px rgba(0,0,0,.3)}
+        /* ========== 泡泡 ========== */
+        .bubble { width: 100%; aspect-ratio: 1/1; max-width: 110px; margin: 0 auto; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-align: center; font-size: clamp(14px, 2vw, 20px); font-weight: bold; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,.4); cursor: pointer; user-select: none; transition: all .15s; word-break: break-all; line-height: 1.2; padding: 4px; box-shadow: 0 6px 10px rgba(0,0,0,.2), inset 0 -4px 8px rgba(0,0,0,.15), inset 0 4px 8px rgba(255,255,255,.4); }
+        .bubble:active { transform: scale(.92); }
+        .bubble.selected { border: 3px solid #ffe484; box-shadow: 0 0 0 3px #ffe484, 0 6px 12px rgba(0,0,0,.3); }
+        .bubble.matched { visibility: hidden; opacity: 0; pointer-events: none; transform: scale(0); }
 
-/* 已匹配的泡泡：直接隐藏，不播放动画 */
-.bubble.matched{visibility:hidden;opacity:0;pointer-events:none;transform:scale(0)}
+        /* ========== 底部按钮 ========== */
+        .bottom-area { margin-top: 8px; text-align: center; }
+        .btn-primary { background: #2d5e2c; color: #fff; border: none; padding: 10px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #1a3a18; transition: all .1s; width: 80%; max-width: 280px; }
+        .btn-primary:active { transform: translateY(2px); box-shadow: 0 2px 0 #1a3a18; }
+        .hint { margin-top: 6px; font-size: 12px; color: #666; }
 
-/* ========== 底部按钮 ========== */
-.bottom-area{margin-top:8px;text-align:center}
-.btn-primary{background:#2d5e2c;color:#fff;border:none;padding:10px 30px;border-radius:25px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 0 #1a3a18;transition:all .1s;width:80%;max-width:280px}
-.btn-primary:active{transform:translateY(2px);box-shadow:0 2px 0 #1a3a18}
-.hint{margin-top:6px;font-size:12px;color:#666}
+        /* ========== 弹窗 ========== */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 999; }
+        .modal-box { background: #f0fae8; border-radius: 18px; padding: 18px; width: 100%; max-width: 500px; max-height: 90vh; overflow: auto; }
+        .modal-box h3 { color: #2d5e2c; margin-bottom: 10px; }
+        .modal-box textarea { width: 100%; height: 120px; border: 2px solid #9dc98d; border-radius: 10px; padding: 10px; font-size: 16px; resize: vertical; font-family: inherit; }
+        .preview { background: #e8f5e1; border-radius: 10px; padding: 8px; margin: 8px 0; white-space: pre-wrap; font-size: 14px; color: #1e4a1a; max-height: 150px; overflow: auto; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+        .modal-btn { border: none; padding: 8px 20px; border-radius: 20px; color: #fff; font-weight: bold; cursor: pointer; min-height: 40px; }
+        .modal-btn.cancel { background: #aaa; }
+        .modal-btn.confirm { background: #3d7a37; }
 
-/* ========== 弹窗 ========== */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:999}
-.modal-box{background:#f0fae8;border-radius:18px;padding:18px;width:100%;max-width:500px;max-height:90vh;overflow:auto}
-.modal-box h3{color:#2d5e2c;margin-bottom:10px}
-.modal-box textarea{width:100%;height:120px;border:2px solid #9dc98d;border-radius:10px;padding:10px;font-size:16px;resize:vertical;font-family:inherit}
-.preview{background:#e8f5e1;border-radius:10px;padding:8px;margin:8px 0;white-space:pre-wrap;font-size:14px;color:#1e4a1a;max-height:150px;overflow:auto}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
-.modal-btn{border:none;padding:8px 20px;border-radius:20px;color:#fff;font-weight:bold;cursor:pointer;min-height:40px}
-.modal-btn.cancel{background:#aaa}
-.modal-btn.confirm{background:#3d7a37}
+        /* ========== 声音解锁提示 ========== */
+        #sound-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.8); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; color: #fff; font-size: 20px; text-align: center; padding: 20px; }
+        #sound-overlay.hidden { display: none; }
+        #sound-overlay .icon { font-size: 60px; margin-bottom: 20px; }
+        #sound-overlay .btn-unlock { background: #3d7a37; color: #fff; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 0 #1d461b; }
 
-/* ========== 声音解锁提示 ========== */
-#sound-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;color:#fff;font-size:20px;text-align:center;padding:20px}
-#sound-overlay.hidden{display:none}
-#sound-overlay .icon{font-size:60px;margin-bottom:20px}
-#sound-overlay .btn-unlock{background:#3d7a37;color:#fff;border:none;padding:15px 40px;border-radius:30px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px;box-shadow:0 4px 0 #1d461b}
-
-/* ========== 响应式 ========== */
-@media (max-width:600px){.game-board{grid-template-columns:repeat(4,1fr)}}
-@media (max-width:400px){.game-board{grid-template-columns:repeat(3,1fr)}}
-@media (min-width:768px){.bubble{font-size:18px}}
-</style>
+        /* ========== 响应式 ========== */
+        @media (max-width: 600px) { .game-board { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 400px) { .game-board { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 768px) { .bubble { font-size: 18px; } }
+    </style>
 </head>
 <body>
 
@@ -114,345 +112,467 @@ select{background:#3d7a37;color:#fff;padding:4px 10px}
 </div>
 
 <script>
-/* ========== 人教版四上全册词库 ========== */
-const BOOK = {
-    u1:{name:'第一单元', words:['观潮','奇观','农历','据说','宽阔','人山人海','顿时','逐渐','犹如','齐头并进','山崩地裂','霎时','余波','依旧','走月亮','柔和','鹅卵石','河床','新鲜','修补','坑坑洼洼','庄稼','风俗','葡萄','满意','水稻','成熟','招待','传说']},
-    u2:{name:'第二单元', words:['豌豆','按照','暖洋洋','舒适','黑暗','恐怕','僵硬','丰满','等待','虚弱','耐心','愉快','兴奋','曾经','蝙蝠','雷达','蚊子','灵巧','横七竖八','绳子','苍蝇','研究','证明','驾驶员','呼风唤雨','世纪','技术','改变','程度','超过','腾云驾雾','幻想','奥秘','日益','联系','物质','哲学','任何','创造','不断']},
-    u3:{name:'第三单元', words:['暮江吟','题西林壁','庐山','侧面','山峰','缘分','投降','逊色','输入','爬山虎','嫩红','舒服','均匀','重叠','空隙','叶柄','反面','触角','弯曲','痕迹','牢固','休想','住宅','随遇而安','住址','优良','专家','修理','清洁']},
-    u4:{name:'第四单元', words:['盘古','精疲力竭','血液','茂盛','雨露','祖宗','精卫填海','普罗米修斯','悲惨','情景','危害','严厉','敬佩','归还','坚定','违抗','尖利','愤愤不平','获得']},
-    u5:{name:'第五单元', words:['嗅到','无可奈何','巢穴','身躯','拯救','幼小','嘶哑','庞大','愣住','准备','凌空','搏斗','摇撼']},
-    u6:{name:'第六单元', words:['无所谓','拳头','捶背','顽皮','脱掉','惹怒','昏倒','握住','摔倒','凭借','掐住','恐怖','斑点','骆驼','羡慕']},
-    u7:{name:'第七单元', words:['出塞','秦朝','征战','歌词','催促','陶醉','杰出','亦然','英雄','项羽']},
-    u8:{name:'第八单元', words:['豹子','娶亲','媳妇','淹没','逼迫','干旱','跪下','绸缎','徒弟','流淌','巫师','绅士','吊灯','倒塌','开凿','渠道','灌溉']}
-};
-
-/* ========== 拼音转换（带声调） ========== */
-function getPinyin(text) {
-    try {
-        if (window.pinyinPro) {
-            return window.pinyinPro.pinyin(text, { toneType: 'symbol', type: 'array' }).join(' ');
-        }
-    } catch(e) {}
-    
-    // 兜底映射
-    const map = {
-        '潮':'cháo','观':'guān','据':'jù','堤':'dī','阔':'kuò','笼':'lóng','罩':'zhào','盼':'pàn',
-        '滚':'gǔn','逐':'zhú','渐':'jiàn','犹':'yóu','淘':'táo','牵':'qiān','鹅':'é','卵':'luǎn',
-        '坑':'kēng','洼':'wā','填':'tián','庄':'zhuāng','稼':'jià','俗':'sú','跃':'yuè','葡':'pú',
-        '萄':'táo','稻':'dào','熟':'shú','巢':'cháo','苇':'wěi','罗':'luó','眠':'mián','霸':'bà',
-        '占':'zhàn','豌':'wān','按':'àn','僵':'jiāng','预':'yù','揭':'jiē','啪':'pā','苔':'tái',
-        '囚':'qiú','框':'kuàng','溢':'yì','舒':'shū','适':'shì','恐':'kǒng','硬':'yìng','枪':'qiāng',
-        '耐':'nài','探':'tàn','愉':'yú','曾':'céng','蝙':'biān','蝠':'fú','启':'qǐ','即':'jí',
-        '锐':'ruì','系':'xì','铛':'dāng','蝇':'yíng','证':'zhèng','障':'zhàng','荧':'yíng','屏':'píng',
-        '达':'dá','蚊':'wén','科':'kē','横':'héng','竖':'shù','绳':'shéng','研':'yán','究':'jiū',
-        '驾':'jià','驶':'shǐ','唤':'huàn','技':'jì','获':'huò','赖':'lài','潜':'qián','亿':'yì',
-        '索':'suǒ','奥':'ào','舶':'bó','质':'zhì','哲':'zhé','兰':'lán','纪':'jì','改':'gǎi',
-        '程':'chéng','超':'chāo','益':'yì','联':'lián','任':'rèn','善':'shàn','暮':'mù','瑟':'sè',
-        '缘':'yuán','降':'xiáng','骚':'sāo','逊':'xùn','输':'shū','吟':'yín','题':'tí','侧':'cè',
-        '峰':'fēng','庐':'lú','阁':'gé','费':'fèi','须':'xū','虎':'hǔ','操':'cāo','嫩':'nèn',
-        '顺':'shùn','均':'jūn','叠':'dié','隙':'xì','茎':'jīng','柄':'bǐng','萎':'wěi','瞧':'qiáo',
-        '固':'gù','蜗':'wō','曲':'qū','宅':'zhái','隐':'yǐn','毫':'háo','慎':'shèn','址':'zhǐ',
-        '良':'liáng','掘':'jué','搜':'sōu','倾':'qīng','骤':'zhòu','置':'zhì','抛':'pāo','劈':'pī',
-        '浊':'zhuó','丈':'zhàng','隆':'lóng','肢':'zhī','躯':'qū','液':'yè','缓':'huǎn','撑':'chēng',
-        '竭':'jié','累':'lèi','血':'xuè','茂':'mào','滋':'zī','宗':'zōng','帝':'dì','少':'shào',
-        '曰':'yuē','溺':'nì','返':'fǎn','堙':'yīn','斯':'sī','惨':'cǎn','盗':'dào','败':'bài',
-        '惩':'chéng','佩':'pèi','恕':'shù','锁':'suǒ','遭':'zāo','恶':'è','愤':'fèn','悲':'bēi',
-        '兽':'shòu','坚':'jiān','违':'wéi','抗':'kàng','环':'huán','既':'jì','狠':'hěn','著':'zhù',
-        '嗅':'xiù','奈':'nài','拯':'zhěng','幼':'yòu','嘶':'sī','哑':'yǎ','庞':'páng','愣':'lèng',
-        '备':'bèi','凌':'líng','搏':'bó','摇':'yáo','撼':'hàn','谓':'wèi','拳':'quán','捶':'chuí',
-        '顽':'wán','脱':'tuō','惹':'rě','昏':'hūn','握':'wò','摔':'shuāi','凭':'píng','掐':'qiā',
-        '怖':'bù','斑':'bān','驼':'tuó','羡':'xiàn','慕':'mù','塞':'sài','秦':'qín','征':'zhēng',
-        '词':'cí','催':'cuī','醉':'zuì','杰':'jié','亦':'yì','雄':'xióng','项':'xiàng','豹':'bào',
-        '娶':'qǔ','媳':'xí','妇':'fù','淹':'yān','逼':'bī','旱':'hàn','跪':'guì','绸':'chóu',
-        '徒':'tú','淌':'tǎng','巫':'wū','绅':'shēn','吊':'diào','塌':'tā','凿':'záo','开':'kāi',
-        '渠':'qú','灌':'guàn'
+    /* ========== 人教版四上全册词库 ========== */
+    const BOOK = {
+        u1: { name: '第一单元', words: ['观潮', '奇观', '农历', '据说', '宽阔', '人山人海', '顿时', '逐渐', '犹如', '齐头并进', '山崩地裂', '霎时', '余波', '依旧', '走月亮', '柔和', '鹅卵石', '河床', '新鲜', '修补', '坑坑洼洼', '庄稼', '风俗', '葡萄', '满意', '水稻', '成熟', '招待', '传说'] },
+        u2: { name: '第二单元', words: ['豌豆', '按照', '暖洋洋', '舒适', '黑暗', '恐怕', '僵硬', '丰满', '等待', '虚弱', '耐心', '愉快', '兴奋', '曾经', '蝙蝠', '雷达', '蚊子', '灵巧', '横七竖八', '绳子', '苍蝇', '研究', '证明', '驾驶员', '呼风唤雨', '世纪', '技术', '改变', '程度', '超过', '腾云驾雾', '幻想', '奥秘', '日益', '联系', '物质', '哲学', '任何', '创造', '不断'] },
+        u3: { name: '第三单元', words: ['暮江吟', '题西林壁', '庐山', '侧面', '山峰', '缘分', '投降', '逊色', '输入', '爬山虎', '嫩红', '舒服', '均匀', '重叠', '空隙', '叶柄', '反面', '触角', '弯曲', '痕迹', '牢固', '休想', '住宅', '随遇而安', '住址', '优良', '专家', '修理', '清洁'] },
+        u4: { name: '第四单元', words: ['盘古', '精疲力竭', '血液', '茂盛', '雨露', '祖宗', '精卫填海', '普罗米修斯', '悲惨', '情景', '危害', '严厉', '敬佩', '归还', '坚定', '违抗', '尖利', '愤愤不平', '获得'] },
+        u5: { name: '第五单元', words: ['嗅到', '无可奈何', '巢穴', '身躯', '拯救', '幼小', '嘶哑', '庞大', '愣住', '准备', '凌空', '搏斗', '摇撼'] },
+        u6: { name: '第六单元', words: ['无所谓', '拳头', '捶背', '顽皮', '脱掉', '惹怒', '昏倒', '握住', '摔倒', '凭借', '掐住', '恐怖', '斑点', '骆驼', '羡慕'] },
+        u7: { name: '第七单元', words: ['出塞', '秦朝', '征战', '歌词', '催促', '陶醉', '杰出', '亦然', '英雄', '项羽'] },
+        u8: { name: '第八单元', words: ['豹子', '娶亲', '媳妇', '淹没', '逼迫', '干旱', '跪下', '绸缎', '徒弟', '流淌', '巫师', '绅士', '吊灯', '倒塌', '开凿', '渠道', '灌溉'] }
     };
-    return text.split('').map(c => map[c] || c).join(' ');
-}
 
-/* ========== 语音功能（在线TTS方案） ========== */
-let soundEnabled = false;
-let currentAudio = null;
-
-function unlockSound() {
-    soundEnabled = true;
-    document.getElementById('sound-overlay').classList.add('hidden');
-    // 播放测试音
-    speak('声音已开启');
-}
-
-function speak(text) {
-    if (!soundEnabled) return;
-    
-    // 使用在线TTS服务（免费，无需API Key）
-    // 这里使用 Google Translate TTS 接口（免费且稳定）
-    const url = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(text) + '&tl=zh-CN&client=tw-ob';
-    
-    // 停止之前的音频
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
-    }
-    
-    // 播放新的音频
-    currentAudio = new Audio(url);
-    currentAudio.play().catch(e => {
-        console.log('在线TTS播放失败，尝试备用方案');
-        // 备用：使用 Web Audio 提示音
-        playFallbackBeep();
-    });
-}
-
-// 备用提示音
-function playFallbackBeep() {
-    try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = 523.25;
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.3);
-    } catch(e) {}
-}
-
-/* ========== 游戏状态 ========== */
-let currentList = [];
-let gameItems = [];
-let selected = null;
-let timer = null;
-let startTime = 0;
-let finished = false;
-let lastTime = null;
-let bestTime = null;
-
-const $ = id => document.getElementById(id);
-const gameBoard = $('game-board');
-
-/* ========== 初始化 ========== */
-function init() {
-    $('apply-btn').onclick = () => useUnit($('unit-select').value);
-    $('next-btn').onclick = newGame;
-    $('custom-btn').onclick = showCustomModal;
-    $('unlock-btn').onclick = unlockSound;
-    
-    useUnit('u1');
-}
-
-/* ========== 使用内置单元 ========== */
-function useUnit(key) {
-    const unit = BOOK[key];
-    if (!unit) return;
-    
-    currentList = [];
-    unit.words.forEach(word => {
-        const py = getPinyin(word);
-        if (py) currentList.push({ text: word, py: py });
-    });
-    
-    $('status').textContent = unit.name;
-    newGame();
-}
-
-/* ========== 自定义词库 ========== */
-function showCustomModal() {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-box">
-            <h3>📝 自定义词库</h3>
-            <p style="font-size:13px;color:#1e4a1a;margin-bottom:8px">每行一个，支持汉字、词语：<br>潮<br>观潮<br>爬山虎</p>
-            <textarea id="custom-input" placeholder="潮&#10;观潮&#10;爬山虎"></textarea>
-            <div class="preview" id="custom-preview">输入后点击"转换"查看拼音</div>
-            <div class="modal-actions">
-                <button class="modal-btn cancel" id="cancel-btn">取消</button>
-                <button class="modal-btn confirm" id="convert-btn">🔄 转换</button>
-                <button class="modal-btn confirm" id="ok-btn">✅ 用这个词库</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    
-    const input = modal.querySelector('#custom-input');
-    const preview = modal.querySelector('#custom-preview');
-    let convertedList = [];
-    
-    modal.querySelector('#convert-btn').onclick = () => {
-        const lines = input.value.split('\n').map(s => s.trim()).filter(Boolean);
-        if (!lines.length) { alert('请输入内容'); return; }
-        
-        convertedList = [];
-        let output = '';
-        lines.forEach(line => {
-            const py = getPinyin(line);
-            if (py) {
-                convertedList.push({ text: line, py: py });
-                output += line + ' → ' + py + '\n';
-            } else {
-                output += '❌ ' + line + ' 无法识别\n';
+    /* ========== 拼音转换（带声调） ========== */
+    function getPinyin(text) {
+        try {
+            if (window.pinyinPro) {
+                return window.pinyinPro.pinyin(text, { toneType: 'symbol', type: 'array' }).join(' ');
             }
-        });
-        preview.textContent = output;
-    };
-    
-    modal.querySelector('#cancel-btn').onclick = () => modal.remove();
-    
-    modal.querySelector('#ok-btn').onclick = () => {
-        if (!convertedList.length) {
-            alert('请先点击"转换"生成拼音');
-            return;
-        }
-        currentList = convertedList;
-        $('status').textContent = '自定义词库（' + currentList.length + '条）';
-        modal.remove();
-        newGame();
-    };
-}
-
-/* ========== 新游戏 ========== */
-function newGame() {
-    if (!currentList.length) return;
-    
-    const pool = [...currentList].sort(() => Math.random() - 0.5).slice(0, 9);
-    gameItems = [];
-    
-    pool.forEach((item, i) => {
-        gameItems.push({ key: i, text: item.text, py: item.py, side: 'text', matched: false });
-        gameItems.push({ key: i, text: item.text, py: item.py, side: 'py', matched: false });
-    });
-    
-    gameItems.sort(() => Math.random() - 0.5);
-    
-    selected = null;
-    finished = false;
-    renderBoard();
-    startTimer();
-}
-
-/* ========== 渲染 ========== */
-function renderBoard() {
-    gameBoard.innerHTML = '';
-    
-    gameItems.forEach((item, index) => {
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
+        } catch (e) {}
         
-        if (item.matched) {
-            bubble.classList.add('matched');
+        // 兜底映射
+        const map = {
+            '潮': 'cháo', '观': 'guān', '据': 'jù', '堤': 'dī', '阔': 'kuò', '笼': 'lóng', '罩': 'zhào', '盼': 'pàn',
+            '滚': 'gǔn', '逐': 'zhú', '渐': 'jiàn', '犹': 'yóu', '淘': 'táo', '牵': 'qiān', '鹅': 'é', '卵': 'luǎn',
+            '坑': 'kēng', '洼': 'wā', '填': 'tián', '庄': 'zhuāng', '稼': 'jià', '俗': 'sú', '跃': 'yuè', '葡': 'pú',
+            '萄': 'táo', '稻': 'dào', '熟': 'shú', '巢': 'cháo', '苇': 'wěi', '罗': 'luó', '眠': 'mián', '霸': 'bà',
+            '占': 'zhàn', '豌': 'wān', '按': 'àn', '僵': 'jiāng', '预': 'yù', '揭': 'jiē', '啪': 'pā', '苔': 'tái',
+            '囚': 'qiú', '框': 'kuàng', '溢': 'yì', '舒': 'shū', '适': 'shì', '恐': 'kǒng', '硬': 'yìng', '枪': 'qiāng',
+            '耐': 'nài', '探': 'tàn', '愉': 'yú', '曾': 'céng', '蝙': 'biān', '蝠': 'fú', '启': 'qǐ', '即': 'jí',
+            '锐': 'ruì', '系': 'xì', '铛': 'dāng', '蝇': 'yíng', '证': 'zhèng', '障': 'zhàng', '荧': 'yíng', '屏': 'píng',
+            '达': 'dá', '蚊': 'wén', '科': 'kē', '横': 'héng', '竖': 'shù', '绳': 'shéng', '研': 'yán', '究': 'jiū',
+            '驾': 'jià', '驶': 'shǐ', '唤': 'huàn', '技': 'jì', '获': 'huò', '赖': 'lài', '潜': 'qián', '亿': 'yì',
+            '索': 'suǒ', '奥': 'ào', '舶': 'bó', '质': 'zhì', '哲': 'zhé', '兰': 'lán', '纪': 'jì', '改': 'gǎi',
+            '程': 'chéng', '超': 'chāo', '益': 'yì', '联': 'lián', '任': 'rèn', '善': 'shàn', '暮': 'mù', '瑟': 'sè',
+            '缘': 'yuán', '降': 'xiáng', '骚': 'sāo', '逊': 'xùn', '输': 'shū', '吟': 'yín', '题': 'tí', '侧': 'cè',
+            '峰': 'fēng', '庐': 'lú', '阁': 'gé', '费': 'fèi', '须': 'xū', '虎': 'hǔ', '操': 'cāo', '嫩': 'nèn',
+            '顺': 'shùn', '均': 'jūn', '叠': 'dié', '隙': 'xì', '茎': 'jīng', '柄': 'bǐng', '萎': 'wěi', '瞧': 'qiáo',
+            '固': 'gù', '蜗': 'wō', '曲': 'qū', '宅': 'zhái', '隐': 'yǐn', '毫': 'háo', '慎': 'shèn', '址': 'zhǐ',
+            '良': 'liáng', '掘': 'jué', '搜': 'sōu', '倾': 'qīng', '骤': 'zhòu', '置': 'zhì', '抛': 'pāo', '劈': 'pī',
+            '浊': 'zhuó', '丈': 'zhàng', '隆': 'lóng', '肢': 'zhī', '躯': 'qū', '液': 'yè', '缓': 'huǎn', '撑': 'chēng',
+            '竭': 'jié', '累': 'lèi', '血': 'xuè', '茂': 'mào', '滋': 'zī', '宗': 'zōng', '帝': 'dì', '少': 'shào',
+            '曰': 'yuē', '溺': 'nì', '返': 'fǎn', '堙': 'yīn', '斯': 'sī', '惨': 'cǎn', '盗': 'dào', '败': 'bài',
+            '惩': 'chéng', '佩': 'pèi', '恕': 'shù', '锁': 'suǒ', '遭': 'zāo', '恶': 'è', '愤': 'fèn', '悲': 'bēi',
+            '兽': 'shòu', '坚': 'jiān', '违': 'wéi', '抗': 'kàng', '环': 'huán', '既': 'jì', '狠': 'hěn', '著': 'zhù',
+            '嗅': 'xiù', '奈': 'nài', '拯': 'zhěng', '幼': 'yòu', '嘶': 'sī', '哑': 'yǎ', '庞': 'páng', '愣': 'lèng',
+            '备': 'bèi', '凌': 'líng', '搏': 'bó', '摇': 'yáo', '撼': 'hàn', '谓': 'wèi', '拳': 'quán', '捶': 'chuí',
+            '顽': 'wán', '脱': 'tuō', '惹': 'rě', '昏': 'hūn', '握': 'wò', '摔': 'shuāi', '凭': 'píng', '掐': 'qiā',
+            '怖': 'bù', '斑': 'bān', '驼': 'tuó', '羡': 'xiàn', '慕': 'mù', '塞': 'sài', '秦': 'qín', '征': 'zhēng',
+            '词': 'cí', '催': 'cuī', '醉': 'zuì', '杰': 'jié', '亦': 'yì', '雄': 'xióng', '项': 'xiàng', '豹': 'bào',
+            '娶': 'qǔ', '媳': 'xí', '妇': 'fù', '淹': 'yān', '逼': 'bī', '旱': 'hàn', '跪': 'guì', '绸': 'chóu',
+            '徒': 'tú', '淌': 'tǎng', '巫': 'wū', '绅': 'shēn', '吊': 'diào', '塌': 'tā', '凿': 'záo', '开': 'kāi',
+            '渠': 'qú', '灌': 'guàn'
+        };
+        return text.split('').map(c => map[c] || c).join(' ');
+    }
+
+    /* ========== 语音功能（平板兼容版） ========== */
+    let soundEnabled = false;
+    let useSpeechSynth = false;
+    let audioCtx = null;
+
+    // 检测是否支持语音合成
+    function checkSpeechSupport() {
+        if ('speechSynthesis' in window) {
+            useSpeechSynth = true;
+            return true;
+        }
+        return false;
+    }
+
+    // 初始化音频上下文（用于降级提示音）
+    function initAudio() {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // 播放降级提示音
+    function playBeep(type) {
+        if (!audioCtx) return;
+        
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        if (type === 'success') {
+            // 匹配成功：两个上升音
+            oscillator.frequency.value = 523.25; // C5
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.3);
+            
+            setTimeout(() => {
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.frequency.value = 659.25; // E5
+                gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc2.start(audioCtx.currentTime);
+                osc2.stop(audioCtx.currentTime + 0.3);
+            }, 300);
+        } else if (type === 'win') {
+            // 胜利：欢快的上升音
+            const notes = [523.25, 659.25, 783.99, 1046.5];
+            notes.forEach((freq, i) => {
+                setTimeout(() => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start(audioCtx.currentTime);
+                    osc.stop(audioCtx.currentTime + 0.3);
+                }, i * 200);
+            });
+        }
+    }
+
+    // 获取可用的中文语音
+    function getChineseVoice() {
+        if (!useSpeechSynth) return null;
+        const voices = speechSynthesis.getVoices();
+        // 优先选择中文语音
+        const zhVoice = voices.find(v => /zh|Chinese|中文/i.test(v.lang + v.name));
+        return zhVoice || null;
+    }
+
+    // 解锁声音
+    function unlockSound() {
+        const support = checkSpeechSupport();
+        
+        if (support) {
+            // 检查是否有中文语音
+            const zhVoice = getChineseVoice();
+            if (zhVoice) {
+                soundEnabled = true;
+                document.getElementById('sound-overlay').classList.add('hidden');
+                speak('声音已开启');
+            } else {
+                // 没有中文语音，提示用户
+                document.getElementById('sound-tip').textContent = '未检测到中文语音包，请到系统设置中下载中文语音后重试';
+                // 尝试用 Web Audio 降级
+                const audioOK = initAudio();
+                if (audioOK) {
+                    soundEnabled = true;
+                    document.getElementById('sound-overlay').classList.add('hidden');
+                    playBeep('success');
+                    document.getElementById('hint').textContent = '当前无中文语音，已切换为提示音模式';
+                }
+            }
+        } else {
+            // 不支持语音合成，尝试用 Web Audio 降级
+            const audioOK = initAudio();
+            if (audioOK) {
+                soundEnabled = true;
+                document.getElementById('sound-overlay').classList.add('hidden');
+                playBeep('success');
+                document.getElementById('hint').textContent = '当前环境不支持语音朗读，已切换为提示音模式';
+            } else {
+                alert('您的浏览器不支持语音功能，也无法播放提示音。游戏仍可正常进行，但无声音反馈。');
+                soundEnabled = true;
+                document.getElementById('sound-overlay').classList.add('hidden');
+            }
+        }
+    }
+
+    // 朗读文字（核心功能）
+    function speak(text) {
+        if (!soundEnabled) return;
+        
+        if (useSpeechSynth && 'speechSynthesis' in window) {
+            // 停止当前朗读
+            speechSynthesis.cancel();
+            
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'zh-CN';
+            u.rate = 0.85;
+            u.pitch = 1.1;
+            u.volume = 1.0;
+            
+            // 强制选择中文语音
+            const zhVoice = getChineseVoice();
+            if (zhVoice) {
+                u.voice = zhVoice;
+            }
+            
+            // 监听朗读结束
+            u.onend = function() {
+                console.log('朗读完成: ' + text);
+            };
+            
+            u.onerror = function(event) {
+                console.log('朗读出错: ' + event.error);
+                // 出错时降级为提示音
+                playBeep('success');
+            };
+            
+            speechSynthesis.speak(u);
+        } else {
+            // 降级：播放提示音
+            playBeep('success');
+        }
+    }
+
+    // 监听语音列表变化（部分浏览器需要）
+    if ('speechSynthesis' in window) {
+        speechSynthesis.onvoiceschanged = function() {
+            console.log('语音列表已更新');
+        };
+    }
+
+    /* ========== 游戏状态 ========== */
+    let currentList = [];
+    let gameItems = [];
+    let selected = null;
+    let timer = null;
+    let startTime = 0;
+    let finished = false;
+    let lastTime = null;
+    let bestTime = null;
+
+    const $ = id => document.getElementById(id);
+    const gameBoard = $('game-board');
+
+    /* ========== 初始化 ========== */
+    function init() {
+        // 检测语音支持情况
+        const support = checkSpeechSupport();
+        if (!support) {
+            document.getElementById('sound-tip').textContent = '当前环境不支持语音朗读，将使用提示音';
+        }
+        
+        $('apply-btn').onclick = () => useUnit($('unit-select').value);
+        $('next-btn').onclick = newGame;
+        $('custom-btn').onclick = showCustomModal;
+        $('unlock-btn').onclick = unlockSound;
+        
+        useUnit('u1');
+    }
+
+    /* ========== 使用内置单元 ========== */
+    function useUnit(key) {
+        const unit = BOOK[key];
+        if (!unit) return;
+        
+        currentList = [];
+        unit.words.forEach(word => {
+            const py = getPinyin(word);
+            if (py) currentList.push({ text: word, py: py });
+        });
+        
+        $('status').textContent = unit.name;
+        newGame();
+    }
+
+    /* ========== 自定义词库 ========== */
+    function showCustomModal() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <h3>📝 自定义词库</h3>
+                <p style="font-size:13px;color:#1e4a1a;margin-bottom:8px">每行一个，支持汉字、词语：<br>潮<br>观潮<br>爬山虎</p>
+                <textarea id="custom-input" placeholder="潮&#10;观潮&#10;爬山虎"></textarea>
+                <div class="preview" id="custom-preview">输入后点击"转换"查看拼音</div>
+                <div class="modal-actions">
+                    <button class="modal-btn cancel" id="cancel-btn">取消</button>
+                    <button class="modal-btn confirm" id="convert-btn">🔄 转换</button>
+                    <button class="modal-btn confirm" id="ok-btn">✅ 用这个词库</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        const input = modal.querySelector('#custom-input');
+        const preview = modal.querySelector('#custom-preview');
+        let convertedList = [];
+        
+        modal.querySelector('#convert-btn').onclick = () => {
+            const lines = input.value.split('\n').map(s => s.trim()).filter(Boolean);
+            if (!lines.length) { alert('请输入内容'); return; }
+            
+            convertedList = [];
+            let output = '';
+            lines.forEach(line => {
+                const py = getPinyin(line);
+                if (py) {
+                    convertedList.push({ text: line, py: py });
+                    output += line + ' → ' + py + '\n';
+                } else {
+                    output += '❌ ' + line + ' 无法识别\n';
+                }
+            });
+            preview.textContent = output;
+        };
+        
+        modal.querySelector('#cancel-btn').onclick = () => modal.remove();
+        
+        modal.querySelector('#ok-btn').onclick = () => {
+            if (!convertedList.length) {
+                alert('请先点击"转换"生成拼音');
+                return;
+            }
+            currentList = convertedList;
+            $('status').textContent = '自定义词库（' + currentList.length + '条）';
+            modal.remove();
+            newGame();
+        };
+    }
+
+    /* ========== 新游戏 ========== */
+    function newGame() {
+        if (!currentList.length) return;
+        
+        const pool = [...currentList].sort(() => Math.random() - 0.5).slice(0, 9);
+        gameItems = [];
+        
+        pool.forEach((item, i) => {
+            gameItems.push({ key: i, text: item.text, py: item.py, side: 'text', matched: false });
+            gameItems.push({ key: i, text: item.text, py: item.py, side: 'py', matched: false });
+        });
+        
+        gameItems.sort(() => Math.random() - 0.5);
+        
+        selected = null;
+        finished = false;
+        renderBoard();
+        startTimer();
+    }
+
+    /* ========== 渲染 ========== */
+    function renderBoard() {
+        gameBoard.innerHTML = '';
+        
+        gameItems.forEach((item, index) => {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            
+            if (item.matched) {
+                bubble.classList.add('matched');
+            }
+            
+            if (selected === index) {
+                bubble.classList.add('selected');
+            }
+            
+            const colors = [
+                ['#8ecae6', '#219ebc'],
+                ['#ffb703', '#fb8500'],
+                ['#06d6a0', '#118ab2'],
+                ['#ef476f', '#ffd166'],
+                ['#9b5de5', '#f15bb5'],
+                ['#00bbf9', '#00f5d4'],
+                ['#fee440', '#9b5de5']
+            ];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,255,255,0) 40%), linear-gradient(145deg, ${color[0]}, ${color[1]})`;
+            
+            bubble.textContent = item.side === 'text' ? item.text : item.py;
+            bubble.onclick = () => handleClick(index);
+            
+            gameBoard.appendChild(bubble);
+        });
+    }
+
+    /* ========== 点击处理 ========== */
+    function handleClick(index) {
+        if (finished || gameItems[index].matched) return;
+        
+        if (selected === null) {
+            selected = index;
+            renderBoard();
+            return;
         }
         
         if (selected === index) {
-            bubble.classList.add('selected');
-        }
-        
-        const colors = [
-            ['#8ecae6', '#219ebc'],
-            ['#ffb703', '#fb8500'],
-            ['#06d6a0', '#118ab2'],
-            ['#ef476f', '#ffd166'],
-            ['#9b5de5', '#f15bb5'],
-            ['#00bbf9', '#00f5d4'],
-            ['#fee440', '#9b5de5']
-        ];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,255,255,0) 40%), linear-gradient(145deg, ${color[0]}, ${color[1]})`;
-        
-        bubble.textContent = item.side === 'text' ? item.text : item.py;
-        bubble.onclick = () => handleClick(index);
-        
-        gameBoard.appendChild(bubble);
-    });
-}
-
-/* ========== 点击处理 ========== */
-function handleClick(index) {
-    if (finished || gameItems[index].matched) return;
-    
-    if (selected === null) {
-        selected = index;
-        renderBoard();
-        return;
-    }
-    
-    if (selected === index) {
-        selected = null;
-        renderBoard();
-        return;
-    }
-    
-    const a = gameItems[selected];
-    const b = gameItems[index];
-    
-    if (a.key === b.key && a.side !== b.side) {
-        a.matched = true;
-        b.matched = true;
-        
-        // 朗读匹配的词语（核心功能）
-        speak(a.text);
-        
-        setTimeout(() => {
             selected = null;
             renderBoard();
+            return;
+        }
+        
+        const a = gameItems[selected];
+        const b = gameItems[index];
+        
+        if (a.key === b.key && a.side !== b.side) {
+            a.matched = true;
+            b.matched = true;
             
-            if (gameItems.every(item => item.matched)) {
-                win();
-            }
-        }, 100);
-    } else {
-        selected = null;
-        renderBoard();
+            // 朗读匹配的词语（核心功能）
+            speak(a.text);
+            
+            setTimeout(() => {
+                selected = null;
+                renderBoard();
+                
+                if (gameItems.every(item => item.matched)) {
+                    win();
+                }
+            }, 100);
+        } else {
+            selected = null;
+            renderBoard();
+        }
     }
-}
 
-/* ========== 胜利 ========== */
-function win() {
-    finished = true;
-    stopTimer();
-    const time = ((performance.now() - startTime) / 1000).toFixed(1);
-    
-    if (bestTime === null || parseFloat(time) < bestTime) {
-        bestTime = parseFloat(time);
-        $('best-time').textContent = '🏆 最快：' + bestTime.toFixed(1) + ' 秒';
-    }
-    
-    let comment = '';
-    if (lastTime === null) {
-        comment = '太棒了，完成了挑战！';
-    } else if (parseFloat(time) < lastTime) {
-        comment = '真厉害，比上次更快了！';
-    } else {
-        comment = '没关系，继续加油！';
-    }
-    
-    lastTime = parseFloat(time);
-    
-    setTimeout(() => {
-        alert('🎉 恭喜挑战成功！用时 ' + time + ' 秒\n' + comment);
-        speak('恭喜挑战成功');
+    /* ========== 胜利 ========== */
+    function win() {
+        finished = true;
+        stopTimer();
+        const time = ((performance.now() - startTime) / 1000).toFixed(1);
+        
+        if (bestTime === null || parseFloat(time) < bestTime) {
+            bestTime = parseFloat(time);
+            $('best-time').textContent = '🏆 最快：' + bestTime.toFixed(1) + ' 秒';
+        }
+        
+        let comment = '';
+        if (lastTime === null) {
+            comment = '太棒了，完成了挑战！';
+        } else if (parseFloat(time) < lastTime) {
+            comment = '真厉害，比上次更快了！';
+        } else {
+            comment = '没关系，继续加油！';
+        }
+        
+        lastTime = parseFloat(time);
+        
         setTimeout(() => {
-            speak(comment);
+            alert('🎉 恭喜挑战成功！用时 ' + time + ' 秒\n' + comment);
+            speak('恭喜挑战成功');
+            setTimeout(() => {
+                speak(comment);
+            }, 1500);
         }, 1500);
-    }, 1500);
-}
+    }
 
-/* ========== 计时器 ========== */
-function startTimer() {
-    stopTimer();
-    startTime = performance.now();
-    timer = setInterval(() => {
-        $('timer').textContent = ((performance.now() - startTime) / 1000).toFixed(1) + ' 秒';
-    }, 100);
-}
+    /* ========== 计时器 ========== */
+    function startTimer() {
+        stopTimer();
+        startTime = performance.now();
+        timer = setInterval(() => {
+            $('timer').textContent = ((performance.now() - startTime) / 1000).toFixed(1) + ' 秒';
+        }, 100);
+    }
 
-function stopTimer() {
-    clearInterval(timer);
-}
+    function stopTimer() {
+        clearInterval(timer);
+    }
 
-/* ========== 启动 ========== */
-init();
+    /* ========== 启动 ========== */
+    init();
 </script>
 </body>
 </html>
