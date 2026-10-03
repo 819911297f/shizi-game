@@ -19,8 +19,8 @@ select{background:#3d7a37;color:#fff;padding:6px 12px}
 .status{background:#f0fae8;border:1px solid #7baa6a;border-radius:30px;padding:6px 12px;font-weight:600;color:#1e4a1a}
 .timer{display:flex;justify-content:space-between;background:#e5f4db;border:2px solid #9dc98d;border-radius:40px;padding:8px 18px;margin-bottom:8px;font-weight:700;color:#1e4a1a}
 #timer{background:#2c5e2a;color:#f9ffe9;padding:4px 14px;border-radius:30px}
-.grid{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;flex:1;align-content:flex-start;padding:10px}
-.bubble{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;text-shadow:2px 2px 6px rgba(0,0,0,.5);font-size:clamp(16px,2.5vw,24px);cursor:pointer;box-shadow:0 12px 15px rgba(0,0,0,.25),inset 0 -8px 12px rgba(0,0,0,.2),inset 0 8px 12px rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.35);word-break:break-word;padding:4px;text-align:center;transition:.15s}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:12px;flex:1;align-content:start;padding:10px}
+.bubble{aspect-ratio:1/1;max-width:110px;width:100%;margin:0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;text-shadow:2px 2px 6px rgba(0,0,0,.5);font-size:clamp(14px,2.2vw,22px);cursor:pointer;box-shadow:0 12px 15px rgba(0,0,0,.25),inset 0 -8px 12px rgba(0,0,0,.2),inset 0 8px 12px rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.35);word-break:break-word;padding:4px;text-align:center;transition:.15s}
 .bubble:active{transform:scale(.95)}
 .bubble.sel{filter:brightness(1.15) saturate(1.2);box-shadow:0 0 0 6px #ffe484,0 12px 20px rgba(0,0,0,.3)}
 .bubble.gone{visibility:hidden;opacity:0;transform:scale(.2)}
@@ -34,7 +34,8 @@ textarea{width:100%;height:120px;border:2px solid #9dc98d;border-radius:10px;pad
 .row{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
 .mbtn{border:none;padding:10px 20px;border-radius:30px;color:#fff;font-weight:700;min-height:44px}
 .mcancel{background:#aaa}.mok{background:#3d7a37}
-@media (max-width:560px){.bubble{width:70px;height:70px;font-size:14px}}
+@media (max-width:600px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media (min-width:601px) and (max-width:1024px){.grid{grid-template-columns:repeat(6,1fr)}}
 </style>
 </head>
 <body>
@@ -117,6 +118,59 @@ function getPinyin(text) {
     }
 }
 
+/* ================= 语音朗读（修复浏览器无声音） ================= */
+let voicesLoaded = false;
+let voiceReady = false;
+
+function loadVoices() {
+    if (!('speechSynthesis' in window)) return;
+    const voices = speechSynthesis.getVoices();
+    if (voices.length > 0) voicesLoaded = true;
+}
+
+// 部分浏览器需要用户交互才能解锁语音
+function unlockAudio() {
+    if (!('speechSynthesis' in window)) return;
+    // 播放一段静音来解锁
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
+    speechSynthesis.speak(u);
+    voiceReady = true;
+}
+
+// 页面加载时尝试加载语音列表
+if ('speechSynthesis' in window) {
+    loadVoices();
+    speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+// 首次点击页面任意位置解锁语音
+document.addEventListener('click', function unlockOnce() {
+    unlockAudio();
+    document.removeEventListener('click', unlockOnce);
+}, { once: true });
+
+function say(t) {
+    if (!('speechSynthesis' in window)) return;
+    // 确保语音已解锁
+    if (!voiceReady) unlockAudio();
+    
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t);
+    
+    // 选择中文语音
+    let voices = speechSynthesis.getVoices();
+    let v = voices.find(x => /zh|Chinese|中文/i.test(x.lang + x.name));
+    if (v) u.voice = v;
+    
+    u.lang = 'zh-CN';
+    u.rate = 0.85;
+    u.pitch = 1.1;
+    u.volume = 1.0;
+    
+    speechSynthesis.speak(u);
+}
+
 /* ================= 状态 ================= */
 let list=[];      // {text, py, kind:'char'|'word'}
 let items=[];     // 泡泡
@@ -194,17 +248,6 @@ $('custom').onclick=()=>{
     m.remove(); newGame();
   };
 };
-
-/* 朗读 */
-function say(t){
-  if(!('speechSynthesis'in window))return;
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t);
-  const v=speechSynthesis.getVoices().find(x=>/zh|Chinese/i.test(x.lang+x.name));
-  if(v)u.voice=v;
-  u.lang='zh-CN'; u.rate=.85; u.pitch=1.1;
-  speechSynthesis.speak(u);
-}
 
 /* 生成配对 */
 function newGame(){
